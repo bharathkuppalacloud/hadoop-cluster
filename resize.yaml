@@ -1,0 +1,14 @@
+---
+- name: Resize Logical Volume for Home
+  hosts: localhost
+  gather_facts: no
+  become: true
+  tasks:
+    - name: Resize physical volume
+      command: pvresize /dev/xvda
+
+    - name: Resize Logical volume for home
+      command: lvresize -L +100%FREE /dev/RootVG/homeVol
+
+    - name: Resize filesystem on home
+      command: resize2fs  /dev/RootVG/homeVol
