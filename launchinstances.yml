@@ -1,0 +1,26 @@
+---
+- name: Create EC2 instance with allocated storage
+  hosts: localhost
+  gather_facts: False
+  tasks:
+    - name: Launch EC2 instance
+      ec2_instance:
+        key_name: your_key_name
+        id: ami-09c813fb71547fc4f # Replace with the correct AMI ID
+        instance_type: t2.micro
+        region: us-east-1  # Replace with your desired region
+        count: 1
+        volume_size: 30  # Allocate 30 GB storage to the root volume
+        volume_type: gp2  # General Purpose SSD
+        instance_tags:
+          Name: Hadoop_Instance
+        wait: yes
+        instance_profile_name: your_instance_profile  # Optional
+        user_data: |
+          #!/bin/bash
+          echo "Setting up instance with allocated space"
+      register: ec2
+
+    - name: Output instance information
+      debug:
+        msg: "Instance {{ ec2.instances[0].public_ip }} is created and allocated storage."
